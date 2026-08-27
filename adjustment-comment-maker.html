@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adjustment Comment Maker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --smc-blue:#003087;
+    --smc-yellow:#EAAA00;
+    --smc-maroon:#782F44;
+    --paper:#F5F6F9;
+    --ink:#1C2434;
+    --line:#D7DBE4;
+    --card:#FFFFFF;
+    --muted:#5B6472;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Open Sans','Segoe UI',Arial,sans-serif;
+    font-weight:400;
+    line-height:1.5;
+  }
+  h1,h2{
+    font-family:'Open Sans','Segoe UI',Arial,sans-serif;
+    margin:0;
+  }
+  header{
+    display:flex; align-items:center; gap:28px;
+    padding:22px 32px;
+    background:#FFFFFF;
+    border-bottom:4px solid var(--smc-yellow);
+  }
+  header img.crest{
+    height:64px; width:auto; display:block;
+    /* clearance per style guide: keep other elements away from the logo */
+    margin-right:8px;
+  }
+  .header-divider{
+    width:1px; align-self:stretch; background:var(--line);
+  }
+  header h1{font-size:22px; color:var(--smc-blue); font-weight:700;}
+  header p{margin:4px 0 0; color:var(--muted); font-size:14px; font-weight:400;}
+  @media (max-width:600px){
+    header{flex-wrap:wrap; gap:14px;}
+    .header-divider{display:none;}
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap:0;
+    align-items:start;
+  }
+  @media (max-width: 900px){
+    .layout{grid-template-columns:1fr;}
+    .preview-col{position:static !important;}
+  }
+
+  .form-col{padding:28px 32px 60px;}
+  .preview-col{
+    padding:28px 32px 60px;
+    position:sticky; top:0;
+    border-left:1px solid var(--line);
+    min-height:100vh;
+    background:#FFFFFF;
+  }
+
+  .student-row{
+    display:flex; gap:16px; flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .field{flex:1; min-width:180px;}
+  .field label{
+    display:block; font-size:12px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--smc-blue); margin-bottom:6px;
+    font-weight:700;
+  }
+  .field input{
+    width:100%; padding:10px 12px; border:1px solid var(--line);
+    border-radius:6px; font-size:15px; background:var(--card);
+    font-family:inherit; color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--smc-blue); outline-offset:1px;}
+
+  .category{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .category-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 18px;
+    border-bottom:1px solid var(--line);
+    background:#EEF1F7;
+    border-left:4px solid var(--smc-blue);
+  }
+  .category-head h2{font-size:15px; font-weight:700; color:var(--smc-blue);}
+  .category-head button{
+    font-size:12px; border:1px solid var(--line); background:transparent;
+    color:var(--muted); padding:4px 10px; border-radius:20px; cursor:pointer;
+    font-family:inherit; font-weight:600;
+  }
+  .category-head button:hover{border-color:var(--smc-maroon); color:var(--smc-maroon);}
+
+  .item{
+    display:grid;
+    grid-template-columns: 22px 1fr auto;
+    align-items:center;
+    gap:12px;
+    padding:11px 18px;
+    border-bottom:1px solid #EDF0F5;
+  }
+  .item:last-child{border-bottom:none;}
+  .item input[type=checkbox]{
+    width:17px; height:17px; accent-color:var(--smc-blue); cursor:pointer;
+  }
+  .item label{font-size:14px; cursor:pointer;}
+  .item select{
+    font-size:13px; padding:5px 8px; border:1px solid var(--line);
+    border-radius:6px; background:#fff; color:var(--ink);
+    font-family:inherit;
+    max-width:170px;
+  }
+  .item select:disabled{opacity:.35; cursor:not-allowed;}
+
+  .actions{
+    display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;
+  }
+  .btn{
+    padding:11px 20px; border-radius:6px; border:none; font-size:14px;
+    cursor:pointer; font-family:inherit; font-weight:700;
+  }
+  .btn-primary{background:var(--smc-blue); color:#fff;}
+  .btn-primary:hover{background:#00246A;}
+  .btn-ghost{background:transparent; border:1px solid var(--line); color:var(--muted);}
+  .btn-ghost:hover{border-color:var(--smc-maroon); color:var(--smc-maroon);}
+
+  .preview-col h2{font-size:13px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--smc-blue); font-weight:700; margin-bottom:14px;}
+  .report-card{
+    background:#fff; border:1px solid var(--line); border-radius:4px;
+    padding:22px 24px; min-height:220px;
+    font-family:inherit; font-size:14.5px; white-space:pre-wrap;
+    box-shadow: 0 1px 0 var(--line), 0 8px 20px -12px rgba(0,48,135,.25);
+    position:relative;
+  }
+  .report-card::before{
+    content:"";
+    position:absolute; top:0; left:0; width:6px; height:100%;
+    background:var(--smc-yellow);
+    border-radius:4px 0 0 4px;
+  }
+  .report-card .placeholder{color:#9AA1AC; font-style:italic;}
+  .copy-row{display:flex; gap:10px; margin-top:14px;}
+  .copy-status{font-size:13px; color:var(--smc-blue); font-weight:600; align-self:center; opacity:0; transition:opacity .2s;}
+  .copy-status.show{opacity:1;}
+  footer{padding:18px 32px 40px; color:var(--muted); font-size:12.5px; border-top:4px solid var(--smc-blue); background:#fff; margin-top:20px;}
+  footer strong{color:var(--smc-blue);}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="crest" src="smc-crest-horizontal.jpg" alt="St Michael&#8217;s College">
+  <div class="header-divider"></div>
+  <div>
+    <h1>Adjustment Comment Maker</h1>
+    <p>Tick the adjustments that apply, set how often, and build the report comment.</p>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="form-col">
+
+    <div class="student-row">
+      <div class="field">
+        <label for="studentName">Student</label>
+        <input id="studentName" type="text" maxlength="80" placeholder="e.g. Sam Citizen">
+      </div>
+      <div class="field">
+        <label for="className">Class</label>
+        <input id="className" type="text" maxlength="30" placeholder="e.g. 8PC-04">
+      </div>
+    </div>
+
+    <div id="categories"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="btnBuild">Build comment</button>
+      <button class="btn btn-ghost" id="btnReset">Clear all</button>
+    </div>
+  </div>
+
+  <div class="preview-col">
+    <h2>Comment preview</h2>
+    <div class="report-card" id="output"><span class="placeholder">Your comment will appear here once you tick some adjustments and hit Build comment.</span></div>
+    <div class="copy-row">
+      <button class="btn btn-ghost" id="btnCopy">Copy to clipboard</button>
+      <span class="copy-status" id="copyStatus">Copied!</span>
+    </div>
+  </div>
+</div>
+
+<footer><strong>St Michael’s College</strong> - Adjustment Comment Maker. Nothing entered here is saved or sent anywhere; it all stays in this browser tab.</footer>
+
+<script src="comment-maker.js"></script>
+
+</body>
+</html>
