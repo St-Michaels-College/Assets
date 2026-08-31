@@ -1,3 +1,2 @@
-# Block all well-behaved crawlers from indexing this site
 User-agent: *
 Disallow: /
